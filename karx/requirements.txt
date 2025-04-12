@@ -2,4 +2,5 @@ psutil>=5.9.0,<6.0.0
 pyperclip>=1.8.2,<2.0.0
 typing-extensions>=4.5.0  # For Python 3.7+ compatibility
 mypy>=1.0.0  # For type checking
-Flask>=2.0.0  # For web interface 
+Flask>=2.0.0  # For web interface
+deepseek-ai>=0.1.0  # For DeepSeek API integration 
