@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KARX - AI Code Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+        }
+        h1 {
+            text-align: center;
+            color: #569cd6;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .input-section, .output-section {
+            flex: 1;
+            background: #252526;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .input-section {
+            min-height: 400px;
+        }
+        .output-section {
+            min-height: 400px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #9cdcfe;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 10px;
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            color: #d4d4d4;
+            font-family: 'Consolas', monospace;
+            resize: vertical;
+        }
+        button {
+            background-color: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1177bb;
+        }
+        .code-output {
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: 'Consolas', monospace;
+            min-height: 300px;
+            overflow-y: auto;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #9cdcfe;
+        }
+        .error {
+            color: #f14c4c;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>KARX - AI Code Assistant</h1>
+    <div class="container">
+        <div class="input-section">
+            <h2>Input</h2>
+            <label for="prompt">Enter your code prompt:</label>
+            <textarea id="prompt" placeholder="Describe the code you want to generate..."></textarea>
+            <button onclick="generateCode()">Generate Code</button>
+            <div class="loading" id="loading">Generating code...</div>
+            <div class="error" id="error"></div>
+        </div>
+        <div class="output-section">
+            <h2>Generated Code</h2>
+            <div class="code-output" id="codeOutput"></div>
+        </div>
+    </div>
+
+    <script>
+        async function generateCode() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) {
+                showError('Please enter a prompt');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const output = document.getElementById('codeOutput');
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate code');
+                }
+
+                const data = await response.json();
+                output.textContent = data.code;
+            } catch (err) {
+                showError(err.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+    </script>
+</body>
+</html> 
